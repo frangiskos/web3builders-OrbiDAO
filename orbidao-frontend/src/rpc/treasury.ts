@@ -1,14 +1,6 @@
-import {
-  PublicKey,
-  Connection,
-  SystemProgram,
-  SYSVAR_RENT_PUBKEY,
-} from '@solana/web3.js';
+import { PublicKey, Connection, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 import { Program, AnchorProvider } from '@coral-xyz/anchor';
-import {
-  TOKEN_PROGRAM_ID,
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-} from '@solana/spl-token';
+import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import idl from '../idl/treasury.json';
 
 // default programs
@@ -28,7 +20,10 @@ const getProgram = (wallet: any, connection: Connection) => {
     AnchorProvider.defaultOptions()
   );
 
-  return new Program(idl_object, idl.metadata.address, provider);
+  // TODO: FIX IDL idl.metadata.address reference. Modified so that it won't generate errors during project build (pnpm run build) process
+  const idl_metadata_address = '';
+
+  return new Program(idl_object, idl_metadata_address, provider);
 };
 
 // Call the initialize method
