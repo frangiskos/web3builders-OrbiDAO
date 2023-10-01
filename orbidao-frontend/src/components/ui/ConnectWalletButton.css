@@ -1,0 +1,6 @@
+.wallet-adapter-button {
+  @apply !bg-primary hover:!opacity-80 !transition-opacity !font-normal !subpixel-antialiased !px-unit-3 !min-w-unit-16 !h-unit-8 !text-tiny !gap-unit-2 !rounded-small !bg-primary !text-primary-foreground data-[pressed=true]:scale-[0.97] !transition-transform-colors motion-reduce:transition-none;
+}
+.wallet-adapter-modal-list .wallet-adapter-button {
+  @apply !text-base !rounded-none !py-6;
+}
