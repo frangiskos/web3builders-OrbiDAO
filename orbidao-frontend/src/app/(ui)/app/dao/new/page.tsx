@@ -1,37 +1,54 @@
-import { Button } from '@/components/ui/Button';
-import { Background } from './Background';
+import { Input } from "@nextui-org/input";
+import { RadioGroup } from "@/components/ui/RadioGroup";
+import { Typography } from "@/components/ui/Typography";
+import { Stepper } from "@/components/ui/Stepper";
+import { Background } from "./Background";
+
+const FirstStep = () => (
+  <RadioGroup type="card" defaultValue="name2" orientation="horizontal">
+    <RadioGroup.Radio type="card" value="name1">
+      Blank
+    </RadioGroup.Radio>
+    <RadioGroup.Radio type="card" value="name2">
+      Delaware C-Corp
+    </RadioGroup.Radio>
+    <RadioGroup.Radio type="card" value="name3">
+      NFT Community
+    </RadioGroup.Radio>
+  </RadioGroup>
+);
+const SecondStep = () => (
+  <div className="w-[440px] flex flex-wrap flex-col gap-2 my-4">
+    <Input type="email" label="Email" />
+    <Input type="password" label="Password" />
+  </div>
+);
+const ThirdStep = () => (
+  <div className="w-[440px] flex flex-wrap flex-col gap-2 my-4 items-start text-left">
+    <Typography as="h3">Review Options</Typography>
+    <Typography>Blank</Typography>
+    <Typography>Input</Typography>
+    <Typography>Input</Typography>
+  </div>
+);
+
+const steps = [
+  <FirstStep key="first" />,
+  <SecondStep key="second" />,
+  <ThirdStep key="third" />,
+];
 
 export default function Page() {
   return (
     <>
       <Background />
       <div className="absolute inset-0 flex flex-col items-center justify-center mx-auto max-w-5xl px-4">
-        <h3 className="text-3xl">Create a new organization</h3>
-        <div className="w-[440px] text-xl text-center my-8">Select a template below</div>
+        <Typography as="h3">Create a new organization</Typography>
+        <Typography className="w-[440px] text-center my-4">
+          Select a template below
+        </Typography>
 
-        <div className="flex gap-8 mt-4">
-          <div className="w-40 h-40 relative">
-            <div className="w-40 h-40 left-0 top-0 absolute bg-zing-200 rounded-[10px] border border-white border-opacity-20 border-dashed" />
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">Blank</div>
-          </div>
-
-          <div className="w-40 h-40 relative">
-            <div className="w-40 h-40 left-0 top-0 absolute bg-gradient-to-b from-zinc-800 to-gray-700 rounded-[10px] border border-indigo-300" />
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-              Delaware
-              <br />
-              C-Corp
-            </div>
-          </div>
-          <div className="w-40 h-40 relative">
-            <div className="w-40 h-40 left-0 top-0 absolute bg-zing-200 rounded-[10px] border border-white border-opacity-20 border-dashed" />
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-              NFT
-              <br />
-              Community
-            </div>
-          </div>
-        </div>
+        <Stepper steps={steps} lastStep="Create" />
         <div className="flex items-center justify-center mt-10 text-sm text-white text-opacity-50">
           <span className="text-slate-400 mx-1">
             <svg
