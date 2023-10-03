@@ -10,11 +10,12 @@ import { cva } from "class-variance-authority";
 interface RadioGroupProps extends BaseRadioGroupProps {
   type?: "card";
 }
+
 interface RadioProps extends BaseRadioProps {
   type?: "card";
 }
 
-const RadioGroup: FC<RadioGroupProps> & { Radio: FC<RadioProps> } = ({ type = "card", children, ...props }) => {
+const RadioGroup: FC<RadioGroupProps> & { Radio: FC<RadioProps> } = ({ type = "card", ...props }) => {
   const RadioGroupVariants = useMemo(
     () =>
       cva(
@@ -33,21 +34,22 @@ const RadioGroup: FC<RadioGroupProps> & { Radio: FC<RadioProps> } = ({ type = "c
     []
   );
 
-  const childWithProps = React.Children.map(children, (child) => {
+  const childWithProps = React.Children.map(props.children, (child) => {
     if (React.isValidElement(child)) {
-      return React.cloneElement(child, { type });
+      return React.cloneElement(child as React.ReactElement<any>, { type });
     }
     return child;
   });
 
   return (
     <BaseRadioGroup
-      {...props}
-      children={childWithProps}
+            {...props}
       classNames={{
         base: RadioGroupVariants({ intent: type }),
       }}
-    />
+    >
+      {childWithProps}
+    </BaseRadioGroup>
   );
 };
 
@@ -70,7 +72,7 @@ const Radio: FC<RadioProps> = ({ type = "card", ...props }) => {
 
   return (
     <BaseRadio
-      {...props}
+            {...props}
       classNames={{
         base: RadioVariants({ intent: type }),
       }}
@@ -79,7 +81,6 @@ const Radio: FC<RadioProps> = ({ type = "card", ...props }) => {
 };
 
 Radio.displayName = "RadioGroup.Radio";
-
 RadioGroup.Radio = Radio;
 RadioGroup.displayName = "RadioGroup";
 
