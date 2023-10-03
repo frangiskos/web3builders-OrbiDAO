@@ -15,22 +15,22 @@ interface RadioProps extends BaseRadioProps {
   type?: "card";
 }
 
-const RadioGroup: FC<RadioGroupProps> & { Radio: FC<RadioProps> } = ({ type = "card", ...props }) => {
+const RadioGroup: FC<RadioGroupProps> & { Radio: FC<RadioProps> } = ({
+  type = "card",
+  ...props
+}) => {
   const RadioGroupVariants = useMemo(
     () =>
-      cva(
-        "h-fit",
-        {
-          variants: {
-            intent: {
-              card: "py-4 px-4",
-            },
+      cva("", {
+        variants: {
+          intent: {
+            card: "py-4 px-4",
           },
-          defaultVariants: {
-            intent: "card",
-          },
-        }
-      ),
+        },
+        defaultVariants: {
+          intent: "card",
+        },
+      }),
     []
   );
 
@@ -43,7 +43,7 @@ const RadioGroup: FC<RadioGroupProps> & { Radio: FC<RadioProps> } = ({ type = "c
 
   return (
     <BaseRadioGroup
-            {...props}
+      {...props}
       classNames={{
         base: RadioGroupVariants({ intent: type }),
       }}
@@ -60,9 +60,9 @@ const Radio: FC<RadioProps> = ({ type = "card", ...props }) => {
         variants: {
           intent: {
             card: [
-              "inline-flex m-0 bg-content1 hover:bg-content2 items-center justify-between radio-button",
-              "max-w-[300px] cursor-pointer rounded-lg gap-4 p-4 border-2 border-dashed",
-              "data-[selected=true]:border-primary data-[selected=true]:border-solid",
+              "basis-0 grow shrink cursor-pointer border rounded-[10px] gap-4 p-4 inline-flex m-0 w-40 h-40 max-w-full items-center text-center justify-center radio-button",
+              "bg-zing-200 border-white border-opacity-20 border-dashed",
+              "data-[selected=true]:bg-gradient-to-b data-[selected=true]:from-zinc-800 data-[selected=true]:to-gray-700 data-[selected=true]:border-solid data-[selected=true]:border-indigo-300",
             ],
           },
         },
@@ -72,7 +72,7 @@ const Radio: FC<RadioProps> = ({ type = "card", ...props }) => {
 
   return (
     <BaseRadio
-            {...props}
+      {...props}
       classNames={{
         base: RadioVariants({ intent: type }),
       }}
@@ -84,4 +84,4 @@ Radio.displayName = "RadioGroup.Radio";
 RadioGroup.Radio = Radio;
 RadioGroup.displayName = "RadioGroup";
 
-export { RadioGroup };
+export { RadioGroup, Radio };
