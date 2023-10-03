@@ -25,3 +25,7 @@ body {
     )
     rgb(var(--background-start-rgb));
 } */
+
+.radio-button :not(div > span, div) {
+  display: none;
+}
