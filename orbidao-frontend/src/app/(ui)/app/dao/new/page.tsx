@@ -1,44 +1,94 @@
+"use client";
 import { Input } from "@nextui-org/input";
 import { RadioGroup } from "@/components/ui/RadioGroup";
 import { Typography } from "@/components/ui/Typography";
 import { Stepper } from "@/components/ui/Stepper";
 import { Background } from "./Background";
+import {
+  ChangeEvent,
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useMemo,
+  useState,
+} from "react";
 
-const FirstStep = () => (
-  <RadioGroup type="card" defaultValue="name2" orientation="horizontal">
-    <RadioGroup.Radio type="card" value="name1">
-      Blank
-    </RadioGroup.Radio>
-    <RadioGroup.Radio type="card" value="name2">
-      Delaware C-Corp
-    </RadioGroup.Radio>
-    <RadioGroup.Radio type="card" value="name3">
-      NFT Community
-    </RadioGroup.Radio>
-  </RadioGroup>
-);
-const SecondStep = () => (
-  <div className="w-[440px] flex flex-wrap flex-col gap-2 my-4">
-    <Input type="email" label="Email" />
-    <Input type="password" label="Password" />
-  </div>
-);
-const ThirdStep = () => (
+type FormDataType = {
+  firstStep: string | undefined;
+  name: string | undefined;
+  email: string | undefined;
+};
+
+interface StepProps {
+  formData?: FormDataType;
+  onUpdate?: Dispatch<SetStateAction<FormDataType>>;
+}
+
+const FirstStep = ({ onUpdate }: StepProps) => {
+  const onRadioChange = (value: string) => {
+    onUpdate?.((prev) => ({ ...prev, firstStep: value }));
+  };
+  return (
+    <RadioGroup
+      type="card"
+      name="firstStep"
+      orientation="horizontal"
+      onValueChange={onRadioChange}
+    >
+      <RadioGroup.Radio type="card" value="Blank">
+        Blank
+      </RadioGroup.Radio>
+      <RadioGroup.Radio type="card" value="Delaware C-Corp">
+        Delaware C-Corp
+      </RadioGroup.Radio>
+      <RadioGroup.Radio type="card" value="NFT Community">
+        NFT Community
+      </RadioGroup.Radio>
+    </RadioGroup>
+  );
+};
+const SecondStep = ({ onUpdate }: StepProps) => {
+  const onFieldChange =
+    (fieldName: string) => (evt: ChangeEvent<HTMLInputElement>) => {
+      onUpdate?.((prev) => ({ ...prev, [fieldName]: evt.target.value }));
+    };
+  return (
+    <div className="w-[440px] flex flex-wrap flex-col gap-2 my-4">
+      <Input type="name" label="Name" onChange={onFieldChange("name")} />
+      <Input type="email" label="Email" onChange={onFieldChange("email")} />
+    </div>
+  );
+};
+const ThirdStep = ({ formData }: StepProps) => (
   <div className="w-[440px] flex flex-wrap flex-col gap-2 my-4 items-start text-left">
     <Typography as="h3">Review Options</Typography>
-    <Typography>Blank</Typography>
-    <Typography>Input</Typography>
-    <Typography>Input</Typography>
+    <Typography>{formData?.firstStep}</Typography>
+    <Typography>{formData?.name}</Typography>
+    <Typography>{formData?.email}</Typography>
   </div>
 );
 
-const steps = [
-  <FirstStep key="first" />,
-  <SecondStep key="second" />,
-  <ThirdStep key="third" />,
-];
-
 export default function Page() {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [formData, setFormData] = useState<FormDataType>({
+    firstStep: undefined,
+    name: undefined,
+    email: undefined,
+  });
+
+  const handleFormSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+  };
+
+  const steps = useMemo(
+    () => [
+      <FirstStep key="first" onUpdate={setFormData} />,
+      <SecondStep key="second" onUpdate={setFormData} />,
+      <ThirdStep key="third" formData={formData} />,
+    ],
+    [formData]
+  );
+
   return (
     <>
       <Background />
@@ -48,7 +98,15 @@ export default function Page() {
           Select a template below
         </Typography>
 
-        <Stepper steps={steps} lastStep="Create" />
+        <form onSubmit={handleFormSubmit}>
+          <Stepper
+            steps={steps}
+            lastStep="Create"
+            current={currentStep}
+            handleStep={setCurrentStep}
+            type={currentStep === steps.length - 1 ? "submit" : "button"}
+          />
+        </form>
         <div className="flex items-center justify-center mt-10 text-sm text-white text-opacity-50">
           <span className="text-slate-400 mx-1">
             <svg
