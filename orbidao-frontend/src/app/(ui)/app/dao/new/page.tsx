@@ -22,11 +22,13 @@ type FormDataType = {
 interface StepProps {
   formData?: FormDataType;
   onUpdate?: Dispatch<SetStateAction<FormDataType>>;
+  onStepChange?: Dispatch<SetStateAction<number>>;
 }
 
-const FirstStep = ({ onUpdate }: StepProps) => {
+const FirstStep = ({ onUpdate, onStepChange }: StepProps) => {
   const onRadioChange = (value: string) => {
     onUpdate?.((prev) => ({ ...prev, firstStep: value }));
+    onStepChange?.((prev) => prev + 1);
   };
   return (
     <RadioGroup
@@ -82,7 +84,11 @@ export default function Page() {
 
   const steps = useMemo(
     () => [
-      <FirstStep key="first" onUpdate={setFormData} />,
+      <FirstStep
+        key="first"
+        onUpdate={setFormData}
+        onStepChange={setCurrentStep}
+      />,
       <SecondStep key="second" onUpdate={setFormData} />,
       <ThirdStep key="third" formData={formData} />,
     ],
