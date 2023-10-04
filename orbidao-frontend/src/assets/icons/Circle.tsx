@@ -12,6 +12,6 @@ export const Circle = () => (
         }}
       />
     </div>
-    <div className="overflow-hidden absolute inset-0 flex items-center justify-center bg-gradient-to-b from-zinc-900 backdrop-blur-[30px]"></div>
+    <div className="overflow-hidden absolute inset-0 flex items-center justify-center bg-gradient-to-b from-zinc-900 backdrop-blur-[30px] z-0"></div>
   </>
 );
