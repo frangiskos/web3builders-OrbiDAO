@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/Button";
 
 interface StepperProps {
   steps: JSX.Element[];
-  lastStep: ReactNode;
+  current: number;
+  lastStep?: ReactNode;
   children?: React.ReactNode;
   isDisabled?: boolean;
   className?: string;
-  initialStep?: number;
+  type?: "button" | "reset" | "submit";
   lastStepAction?: JSX.Element;
+  handleStep: React.Dispatch<React.SetStateAction<number>>;
   onFinish?: () => void;
   onNextChange?: () => void;
   onPreviousChange?: () => void;
@@ -60,21 +62,22 @@ const ChevronLeft = () => (
 
 const Stepper: FC<StepperProps> = ({
   children,
-  lastStep,
+  lastStep = "Proceed",
   steps,
+  current,
+  handleStep,
+  type,
   className = "",
   isDisabled = false,
-  initialStep = 0,
   lastStepAction,
   onFinish,
   onNextChange,
   onPreviousChange,
 }) => {
-  const [currentStep, setCurrentStep] = useState(initialStep);
-  const isLastStep = currentStep === steps.length - 1;
+  const isLastStep = current === steps.length - 1;
 
   const handleNext = () => {
-    setCurrentStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
+    handleStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
     if (isLastStep) {
       onFinish?.();
     } else {
@@ -83,18 +86,18 @@ const Stepper: FC<StepperProps> = ({
   };
 
   const handlePrevious = () => {
-    setCurrentStep((prevStep) => Math.max(prevStep - 1, 0));
+    handleStep((prevStep) => Math.max(prevStep - 1, 0));
     onPreviousChange?.();
   };
 
   return (
     <div className={`flex flex-col ${className}`}>
-      {steps[currentStep]}
+      {steps[current]}
       <div className="flex justify-end gap-2">
         <Button
           onClick={handlePrevious}
           isIconOnly
-          isDisabled={currentStep === 0 || isDisabled}
+          isDisabled={current === 0 || isDisabled}
         >
           <ChevronLeft />
         </Button>
@@ -106,6 +109,7 @@ const Stepper: FC<StepperProps> = ({
             isIconOnly={!isLastStep}
             isDisabled={isDisabled}
             className="h-14"
+            type={type}
           >
             {isLastStep ? lastStep : <ChevronRight />}
           </Button>
