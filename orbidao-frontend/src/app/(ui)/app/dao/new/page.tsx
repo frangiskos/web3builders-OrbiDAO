@@ -1,116 +1,134 @@
 "use client";
-import { Input } from "@nextui-org/input";
-import { RadioGroup } from "@/components/ui/RadioGroup";
 import { Typography } from "@/components/ui/Typography";
 import { Stepper } from "@/components/ui/Stepper";
 import { Background } from "./Background";
-import {
-  ChangeEvent,
-  Dispatch,
-  FormEvent,
-  SetStateAction,
-  useMemo,
-  useState,
-} from "react";
+import { Dispatch, FormEvent, SetStateAction, useMemo, useState } from "react";
+import { CreateOrgTemplate } from "./CreateOrgTemplate";
+import { NameOrganization } from "./CreateOrgName";
+import { MEMBERSHIP, Membership } from "./Membership";
+import { TokenIssuance } from "./TokenIssuance";
+import { ProposalFee } from "./ProposalFee";
+import { Voting } from "./Voting";
+import { VoteQuorum } from "./QuorumParticipants";
+import { VotingStake } from "./VotingStake";
+import { PreVoting } from "./PreVoting";
+import { PostVoting } from "./PostVoting";
+import { CreateOrgReview } from "./Review";
 
-type FormDataType = {
-  firstStep: string | undefined;
-  name: string | undefined;
-  email: string | undefined;
+export type FormDataType = {
+  orgTemplate?: string;
+  organizationName?: string;
+  membership?: string;
+  mintAddress?: string;
+  collectionAddress?: string;
+  proposalFee?: string;
+  votes?: string;
+  quorumParticipation?: string;
+  votingStake?: string;
+  preVoting?: string;
+  postVoting?: string;
 };
 
-interface StepProps {
-  formData?: FormDataType;
-  onUpdate?: Dispatch<SetStateAction<FormDataType>>;
+export interface StepProps {
+  formData: FormDataType;
+  onUpdate: (fieldName: keyof FormDataType) => (value: string) => void;
   onStepChange?: Dispatch<SetStateAction<number>>;
 }
-
-const FirstStep = ({ onUpdate, onStepChange }: StepProps) => {
-  const onRadioChange = (value: string) => {
-    onUpdate?.((prev) => ({ ...prev, firstStep: value }));
-    onStepChange?.((prev) => prev + 1);
-  };
-  return (
-    <RadioGroup
-      type="card"
-      name="firstStep"
-      orientation="horizontal"
-      onValueChange={onRadioChange}
-    >
-      <RadioGroup.Radio type="card" value="Blank">
-        Blank
-      </RadioGroup.Radio>
-      <RadioGroup.Radio type="card" value="Delaware C-Corp">
-        Delaware C-Corp
-      </RadioGroup.Radio>
-      <RadioGroup.Radio type="card" value="NFT Community">
-        NFT Community
-      </RadioGroup.Radio>
-    </RadioGroup>
-  );
-};
-const SecondStep = ({ onUpdate }: StepProps) => {
-  const onFieldChange =
-    (fieldName: string) => (evt: ChangeEvent<HTMLInputElement>) => {
-      onUpdate?.((prev) => ({ ...prev, [fieldName]: evt.target.value }));
-    };
-  return (
-    <div className="w-[440px] flex flex-wrap flex-col gap-2 my-4">
-      <Input type="name" label="Name" onChange={onFieldChange("name")} />
-      <Input type="email" label="Email" onChange={onFieldChange("email")} />
-    </div>
-  );
-};
-const ThirdStep = ({ formData }: StepProps) => (
-  <div className="w-[440px] flex flex-wrap flex-col gap-2 my-4 items-start text-left">
-    <Typography as="h3">Review Options</Typography>
-    <Typography>{formData?.firstStep}</Typography>
-    <Typography>{formData?.name}</Typography>
-    <Typography>{formData?.email}</Typography>
-  </div>
-);
 
 export default function Page() {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<FormDataType>({
-    firstStep: undefined,
-    name: undefined,
-    email: undefined,
+    quorumParticipation: "51",
+    preVoting: "1",
+    postVoting: "14",
   });
 
   const handleFormSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
+    console.log("submit: ", formData);
   };
 
-  const steps = useMemo(
-    () => [
-      <FirstStep
-        key="first"
-        onUpdate={setFormData}
+  const onFormUpdate = (fieldName: keyof FormDataType) => (value: string) => {
+    setFormData((prev) => ({ ...prev, [fieldName]: value }));
+  };
+
+  const steps = useMemo(() => {
+    const { membership } = formData;
+    const createOrganization = [
+      <CreateOrgTemplate
+        key="createOrg"
+        formData={formData}
+        onUpdate={onFormUpdate}
         onStepChange={setCurrentStep}
       />,
-      <SecondStep key="second" onUpdate={setFormData} />,
-      <ThirdStep key="third" formData={formData} />,
-    ],
-    [formData]
-  );
+      <NameOrganization
+        key="nameOrg"
+        formData={formData}
+        onUpdate={onFormUpdate}
+      />,
+      <Membership
+        key="memberShip"
+        formData={formData}
+        onUpdate={onFormUpdate}
+        onStepChange={setCurrentStep}
+      />,
+      <ProposalFee
+        key="proposalFee"
+        formData={formData}
+        onUpdate={onFormUpdate}
+      />,
+      <Voting key="voting" formData={formData} onUpdate={onFormUpdate} />,
+      <VoteQuorum
+        key="voteQuorum"
+        formData={formData}
+        onUpdate={onFormUpdate}
+      />,
+      <PreVoting key="preVoting" formData={formData} onUpdate={onFormUpdate} />,
+      <PostVoting
+        key="postVoting"
+        formData={formData}
+        onUpdate={onFormUpdate}
+      />,
+      <CreateOrgReview key="review" formData={formData} />,
+    ];
+
+    if (membership && membership !== MEMBERSHIP.WHITELIST) {
+      createOrganization.splice(
+        3,
+        0,
+        <TokenIssuance
+          key="tokenIssuance"
+          formData={formData}
+          onUpdate={onFormUpdate}
+        />
+      );
+    }
+    if (membership && membership === MEMBERSHIP.NON_FUNGIBLE) {
+      createOrganization.splice(
+        7,
+        0,
+        <VotingStake
+          key="votingStake"
+          formData={formData}
+          onUpdate={onFormUpdate}
+        />
+      );
+    }
+
+    return createOrganization;
+  }, [formData]);
 
   return (
     <>
       <Background />
       <div className="absolute inset-0 flex flex-col items-center justify-center mx-auto max-w-5xl px-4">
-        <Typography as="h3">Create a new organization</Typography>
-        <Typography className="w-[440px] text-center my-4">
-          Select a template below
-        </Typography>
-
         <form onSubmit={handleFormSubmit}>
           <Stepper
             steps={steps}
             lastStep="Create"
             current={currentStep}
             handleStep={setCurrentStep}
-            type={currentStep === steps.length - 1 ? "submit" : "button"}
+            type={currentStep < steps.length - 1 ? "button" : "submit"}
           />
         </form>
         <div className="flex items-center justify-center mt-10 text-sm text-white text-opacity-50">
