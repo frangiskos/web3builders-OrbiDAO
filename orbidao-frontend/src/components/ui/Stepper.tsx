@@ -11,7 +11,7 @@ interface StepperProps {
   className?: string;
   type?: "button" | "reset" | "submit";
   lastStepAction?: JSX.Element;
-  handleStep: React.Dispatch<React.SetStateAction<number>>;
+  handleStep: (val: number) => void;
   onFinish?: () => void;
   onNextChange?: () => void;
   onPreviousChange?: () => void;
@@ -77,7 +77,7 @@ const Stepper: FC<StepperProps> = ({
   const isLastStep = current === steps.length - 1;
 
   const handleNext = () => {
-    handleStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
+    handleStep(Math.min(current + 1, steps.length - 1));
     if (isLastStep) {
       onFinish?.();
     } else {
@@ -86,7 +86,7 @@ const Stepper: FC<StepperProps> = ({
   };
 
   const handlePrevious = () => {
-    handleStep((prevStep) => Math.max(prevStep - 1, 0));
+    handleStep(Math.max(current - 1, 0));
     onPreviousChange?.();
   };
 
@@ -97,7 +97,7 @@ const Stepper: FC<StepperProps> = ({
         <Button
           onClick={handlePrevious}
           isIconOnly
-          isDisabled={current === 0 || isDisabled}
+          isDisabled={current === 0}
         >
           <ChevronLeft />
         </Button>

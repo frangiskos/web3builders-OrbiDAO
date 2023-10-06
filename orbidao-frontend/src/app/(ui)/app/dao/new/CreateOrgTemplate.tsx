@@ -1,18 +1,35 @@
+import { useEffect } from "react";
 import { RadioGroup } from "@/components/ui/RadioGroup";
 import { Typography } from "@/components/ui/Typography";
 import { StepProps } from "./page";
 
-const CreateOrgTemplate = ({ onUpdate, onStepChange, formData }: StepProps) => {
+const CreateOrgTemplate = ({
+  onUpdate,
+  onStepChange,
+  formData,
+  onHold,
+}: StepProps) => {
   const formKey = "orgTemplate";
   const onRadioChange = (value: string) => {
     onUpdate(formKey)(value);
     onStepChange?.((prev) => prev + 1);
   };
+
+  useEffect(() => {
+    if (formData[formKey]) {
+      onHold(false);
+    } else {
+      onHold(true);
+    }
+  }, [formData[formKey]]);
+
   return (
     <>
-      <div className="text-center">
+      <div className="text-center mb-6">
         <Typography as="h3">Create a new organization</Typography>
-        <Typography className="my-4">Select a template below</Typography>
+        <Typography weight="light" className="my-4">
+          Select a template below
+        </Typography>
       </div>
       <RadioGroup
         type="card"

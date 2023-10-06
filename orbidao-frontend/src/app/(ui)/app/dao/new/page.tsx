@@ -1,5 +1,4 @@
 "use client";
-import { Typography } from "@/components/ui/Typography";
 import { Stepper } from "@/components/ui/Stepper";
 import { Background } from "./Background";
 import { Dispatch, FormEvent, SetStateAction, useMemo, useState } from "react";
@@ -33,10 +32,13 @@ export interface StepProps {
   formData: FormDataType;
   onUpdate: (fieldName: keyof FormDataType) => (value: string) => void;
   onStepChange?: Dispatch<SetStateAction<number>>;
+  onHold: (is: boolean) => void;
 }
 
 export default function Page() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [isFinal, setIsFinal] = useState(false);
   const [formData, setFormData] = useState<FormDataType>({
     quorumParticipation: "51",
     preVoting: "1",
@@ -52,6 +54,10 @@ export default function Page() {
     setFormData((prev) => ({ ...prev, [fieldName]: value }));
   };
 
+  const onFormHold = (isDisabled: boolean) => {
+    setIsDisabled(isDisabled);
+  };
+
   const steps = useMemo(() => {
     const { membership } = formData;
     const createOrganization = [
@@ -60,34 +66,50 @@ export default function Page() {
         formData={formData}
         onUpdate={onFormUpdate}
         onStepChange={setCurrentStep}
+        onHold={onFormHold}
       />,
       <NameOrganization
         key="nameOrg"
         formData={formData}
         onUpdate={onFormUpdate}
+        onHold={onFormHold}
       />,
       <Membership
         key="memberShip"
         formData={formData}
         onUpdate={onFormUpdate}
         onStepChange={setCurrentStep}
+        onHold={onFormHold}
       />,
       <ProposalFee
         key="proposalFee"
         formData={formData}
         onUpdate={onFormUpdate}
+        onHold={onFormHold}
       />,
-      <Voting key="voting" formData={formData} onUpdate={onFormUpdate} />,
+      <Voting
+        key="voting"
+        formData={formData}
+        onUpdate={onFormUpdate}
+        onHold={onFormHold}
+      />,
       <VoteQuorum
         key="voteQuorum"
         formData={formData}
         onUpdate={onFormUpdate}
+        onHold={onFormHold}
       />,
-      <PreVoting key="preVoting" formData={formData} onUpdate={onFormUpdate} />,
+      <PreVoting
+        key="preVoting"
+        formData={formData}
+        onUpdate={onFormUpdate}
+        onHold={onFormHold}
+      />,
       <PostVoting
         key="postVoting"
         formData={formData}
         onUpdate={onFormUpdate}
+        onHold={onFormHold}
       />,
       <CreateOrgReview key="review" formData={formData} />,
     ];
@@ -100,6 +122,7 @@ export default function Page() {
           key="tokenIssuance"
           formData={formData}
           onUpdate={onFormUpdate}
+          onHold={onFormHold}
         />
       );
     }
@@ -111,12 +134,22 @@ export default function Page() {
           key="votingStake"
           formData={formData}
           onUpdate={onFormUpdate}
+          onHold={onFormHold}
         />
       );
     }
 
     return createOrganization;
   }, [formData]);
+
+  const onStepChange = (current: number) => {
+    setCurrentStep(current);
+    if (currentStep === steps.length - 1) {
+      setIsFinal(true);
+    } else {
+      setIsFinal(false);
+    }
+  };
 
   return (
     <>
@@ -126,9 +159,11 @@ export default function Page() {
           <Stepper
             steps={steps}
             lastStep="Create"
+            isDisabled={isDisabled}
             current={currentStep}
-            handleStep={setCurrentStep}
-            type={currentStep < steps.length - 1 ? "button" : "submit"}
+            handleStep={onStepChange}
+            className="md:w-[35vw] xs:w-[90vw]"
+            type={isFinal ? "submit" : "button"}
           />
         </form>
         <div className="flex items-center justify-center mt-10 text-sm text-white text-opacity-50">

@@ -8,25 +8,54 @@ const CreateOrgReview = ({ formData }: Pick<StepProps, "formData">) => {
   return (
     <div className="w-[440px] flex flex-wrap flex-col gap-2 my-4 items-start text-left">
       <Typography as="h3">Review Options</Typography>
-      <Typography>Template: {`${formData?.orgTemplate}`}</Typography>
-      <Typography>Name: {`${formData?.organizationName}`}</Typography>
-      <Typography>Membership{`${formData?.membership}`}</Typography>
+      <Typography weight="light">
+        Template:
+        <Typography className="p-0">{`${formData?.orgTemplate}`}</Typography>
+      </Typography>
+      <Typography weight="light">
+        Name:{" "}
+        <Typography className="p-0">{`${formData?.organizationName}`}</Typography>
+      </Typography>
+      <Typography weight="light">
+        Membership:{" "}
+        <Typography className="p-0">{`${formData?.membership}`}</Typography>
+      </Typography>
       {!hideAddress && (
-        <Typography>
+        <Typography weight="light">
           {isFungible ? "Mint Address" : "Collection Address"}:
-          {`${formData?.mintAddress || formData?.collectionAddress}`}
+          <Typography className="p-0">{`${
+            formData?.mintAddress || formData?.collectionAddress
+          }`}</Typography>
         </Typography>
       )}
-      <Typography>Proposal Fee: {`${formData?.proposalFee}`}</Typography>
-      <Typography>Votes: {`${formData?.votes}`}</Typography>
-      <Typography>
-        Votes :: Quorum Participation: {`${formData?.quorumParticipation}`}%
+      <Typography weight="light">
+        Proposal Fee:
+        <Typography className="p-0">{`${formData?.proposalFee}`}</Typography>
+      </Typography>
+      <Typography weight="light">
+        Votes:
+        <Typography className="p-0">{`${formData?.votes}`}</Typography>
+      </Typography>
+      <Typography weight="light">
+        Votes :: Quorum Participation:
+        <Typography className="p-0">
+          {`${formData?.quorumParticipation}`}%
+        </Typography>
       </Typography>
       {!hideAddress && !isFungible && (
-        <Typography>Votes :: Stake: {`${formData?.votingStake}`}</Typography>
+        <Typography weight="light">
+          Votes :: Stake:{" "}
+          <Typography className="p-0">{`${formData?.votingStake}`}</Typography>
+        </Typography>
       )}
-      <Typography>Votes :: Pre-voting: {`${formData?.preVoting}`}</Typography>
-      <Typography>Votes :: Post-voting: {`${formData?.postVoting}`}</Typography>
+      <Typography weight="light">
+        Votes :: Pre-voting:{" "}
+        <Typography className="p-0">{`${formData?.preVoting}`}</Typography>
+      </Typography>
+      <Typography weight="light">
+        Votes :: Post-voting:{" "}
+        <Typography className="p-0">{`${formData?.postVoting}`}</Typography>
+      </Typography>
     </div>
   );
 };

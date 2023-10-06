@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { RadioGroup } from "@/components/ui/RadioGroup";
 import { Typography } from "@/components/ui/Typography";
 import { StepProps } from "./page";
@@ -8,17 +9,31 @@ export enum MEMBERSHIP {
   WHITELIST = "whitelist",
 }
 
-const Membership = ({ onUpdate, onStepChange, formData }: StepProps) => {
+const Membership = ({
+  onUpdate,
+  onStepChange,
+  formData,
+  onHold,
+}: StepProps) => {
   const formKey = "membership";
   const onRadioChange = (value: string) => {
     onUpdate(formKey)(value);
     onStepChange?.((prev) => prev + 1);
   };
+
+  useEffect(() => {
+    if (formData[formKey]) {
+      onHold(false);
+    } else {
+      onHold(true);
+    }
+  }, [formData[formKey]]);
+
   return (
     <>
-      <div className="text-center">
+      <div className="text-center mb-6">
         <Typography as="h3">Choose membership method</Typography>
-        <Typography className="w-[440px] text-center my-4">
+        <Typography weight="light" className="text-center my-4">
           This will define how members can join your organization
         </Typography>
       </div>
