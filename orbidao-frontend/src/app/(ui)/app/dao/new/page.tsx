@@ -1,54 +1,171 @@
-import { Input } from "@nextui-org/input";
-import { RadioGroup } from "@/components/ui/RadioGroup";
-import { Typography } from "@/components/ui/Typography";
+"use client";
 import { Stepper } from "@/components/ui/Stepper";
 import { Background } from "./Background";
+import { Dispatch, FormEvent, SetStateAction, useMemo, useState } from "react";
+import { CreateOrgTemplate } from "./CreateOrgTemplate";
+import { NameOrganization } from "./CreateOrgName";
+import { MEMBERSHIP, Membership } from "./Membership";
+import { TokenIssuance } from "./TokenIssuance";
+import { ProposalFee } from "./ProposalFee";
+import { Voting } from "./Voting";
+import { VoteQuorum } from "./QuorumParticipants";
+import { VotingStake } from "./VotingStake";
+import { PreVoting } from "./PreVoting";
+import { PostVoting } from "./PostVoting";
+import { CreateOrgReview } from "./Review";
 
-const FirstStep = () => (
-  <RadioGroup type="card" defaultValue="name2" orientation="horizontal">
-    <RadioGroup.Radio type="card" value="name1">
-      Blank
-    </RadioGroup.Radio>
-    <RadioGroup.Radio type="card" value="name2">
-      Delaware C-Corp
-    </RadioGroup.Radio>
-    <RadioGroup.Radio type="card" value="name3">
-      NFT Community
-    </RadioGroup.Radio>
-  </RadioGroup>
-);
-const SecondStep = () => (
-  <div className="w-[440px] flex flex-wrap flex-col gap-2 my-4">
-    <Input type="email" label="Email" />
-    <Input type="password" label="Password" />
-  </div>
-);
-const ThirdStep = () => (
-  <div className="w-[440px] flex flex-wrap flex-col gap-2 my-4 items-start text-left">
-    <Typography as="h3">Review Options</Typography>
-    <Typography>Blank</Typography>
-    <Typography>Input</Typography>
-    <Typography>Input</Typography>
-  </div>
-);
+export type FormDataType = {
+  orgTemplate?: string;
+  organizationName?: string;
+  membership?: string;
+  mintAddress?: string;
+  collectionAddress?: string;
+  proposalFee?: string;
+  votes?: string;
+  quorumParticipation?: string;
+  votingStake?: string;
+  preVoting?: string;
+  postVoting?: string;
+};
 
-const steps = [
-  <FirstStep key="first" />,
-  <SecondStep key="second" />,
-  <ThirdStep key="third" />,
-];
+export interface StepProps {
+  formData: FormDataType;
+  onUpdate: (fieldName: keyof FormDataType) => (value: string) => void;
+  onStepChange?: Dispatch<SetStateAction<number>>;
+  onHold: (is: boolean) => void;
+}
 
 export default function Page() {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [isFinal, setIsFinal] = useState(false);
+  const [formData, setFormData] = useState<FormDataType>({
+    quorumParticipation: "51",
+    preVoting: "1",
+    postVoting: "14",
+  });
+
+  const handleFormSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+    console.log("submit: ", formData);
+  };
+
+  const onFormUpdate = (fieldName: keyof FormDataType) => (value: string) => {
+    setFormData((prev) => ({ ...prev, [fieldName]: value }));
+  };
+
+  const onFormHold = (isDisabled: boolean) => {
+    setIsDisabled(isDisabled);
+  };
+
+  const steps = useMemo(() => {
+    const { membership } = formData;
+    const createOrganization = [
+      <CreateOrgTemplate
+        key="createOrg"
+        formData={formData}
+        onUpdate={onFormUpdate}
+        onStepChange={setCurrentStep}
+        onHold={onFormHold}
+      />,
+      <NameOrganization
+        key="nameOrg"
+        formData={formData}
+        onUpdate={onFormUpdate}
+        onHold={onFormHold}
+      />,
+      <Membership
+        key="memberShip"
+        formData={formData}
+        onUpdate={onFormUpdate}
+        onStepChange={setCurrentStep}
+        onHold={onFormHold}
+      />,
+      <ProposalFee
+        key="proposalFee"
+        formData={formData}
+        onUpdate={onFormUpdate}
+        onHold={onFormHold}
+      />,
+      <Voting
+        key="voting"
+        formData={formData}
+        onUpdate={onFormUpdate}
+        onHold={onFormHold}
+      />,
+      <VoteQuorum
+        key="voteQuorum"
+        formData={formData}
+        onUpdate={onFormUpdate}
+        onHold={onFormHold}
+      />,
+      <PreVoting
+        key="preVoting"
+        formData={formData}
+        onUpdate={onFormUpdate}
+        onHold={onFormHold}
+      />,
+      <PostVoting
+        key="postVoting"
+        formData={formData}
+        onUpdate={onFormUpdate}
+        onHold={onFormHold}
+      />,
+      <CreateOrgReview key="review" formData={formData} />,
+    ];
+
+    if (membership && membership !== MEMBERSHIP.WHITELIST) {
+      createOrganization.splice(
+        3,
+        0,
+        <TokenIssuance
+          key="tokenIssuance"
+          formData={formData}
+          onUpdate={onFormUpdate}
+          onHold={onFormHold}
+        />
+      );
+    }
+    if (membership && membership === MEMBERSHIP.NON_FUNGIBLE) {
+      createOrganization.splice(
+        7,
+        0,
+        <VotingStake
+          key="votingStake"
+          formData={formData}
+          onUpdate={onFormUpdate}
+          onHold={onFormHold}
+        />
+      );
+    }
+
+    return createOrganization;
+  }, [formData]);
+
+  const onStepChange = (current: number) => {
+    setCurrentStep(current);
+    if (currentStep === steps.length - 1) {
+      setIsFinal(true);
+    } else {
+      setIsFinal(false);
+    }
+  };
+
   return (
     <>
       <Background />
       <div className="absolute inset-0 flex flex-col items-center justify-center mx-auto max-w-5xl px-4">
-        <Typography as="h3">Create a new organization</Typography>
-        <Typography className="w-[440px] text-center my-4">
-          Select a template below
-        </Typography>
-
-        <Stepper steps={steps} lastStep="Create" />
+        <form onSubmit={handleFormSubmit}>
+          <Stepper
+            steps={steps}
+            lastStep="Create"
+            isDisabled={isDisabled}
+            current={currentStep}
+            handleStep={onStepChange}
+            className="md:w-[35vw] xs:w-[90vw]"
+            type={isFinal ? "submit" : "button"}
+          />
+        </form>
         <div className="flex items-center justify-center mt-10 text-sm text-white text-opacity-50">
           <span className="text-slate-400 mx-1">
             <svg

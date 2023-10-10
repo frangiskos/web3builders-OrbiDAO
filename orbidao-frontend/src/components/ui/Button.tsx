@@ -163,7 +163,7 @@ const Button = forwardRef<typeof BaseButton, ButtonProps>(
     };
 
     return (
-      <RenderedElement {...elementProps}>
+      <RenderedElement {...elementProps} disabled={isDisabled}>
         {isLoading && <LoadingSpinner size={size} />}
         {children}
       </RenderedElement>
