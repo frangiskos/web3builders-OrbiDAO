@@ -6,14 +6,14 @@ interface TypographyProps {
   as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span";
   type?: "primary" | "secondary" | "warning" | "danger" | "disabled";
   italic?: boolean;
-  strong?: boolean;
+  weight?: "light" | "normal" | "medium" | "semibold" | "bold";
   isDisabled?: boolean;
   className?: string;
   onClick?: () => void;
 }
 
 const Typography = forwardRef<HTMLHeadingElement & HTMLParagraphElement & HTMLSpanElement, TypographyProps>(
-  ({ children, className = "", as = "p", italic, strong, type, onClick, ...props }, ref) => {
+  ({ children, className = "", as = "p", italic, weight = "normal", type, onClick, ...props }, ref) => {
     
     const styledClasses = useMemo(() => {
       const TypographyVariants = cva(
@@ -45,8 +45,8 @@ const Typography = forwardRef<HTMLHeadingElement & HTMLParagraphElement & HTMLSp
         }
       );
 
-      return `${italic ? "italic" : ""} ${strong ? "font-bold" : ""} ${TypographyVariants({ intent: type, as })} ${className}`;
-    }, [as, className, italic, strong, type]);
+      return `${italic ? "italic" : ""} font-${weight} ${TypographyVariants({ intent: type, as })} ${className}`;
+    }, [as, className, italic, weight, type]);
 
     const ElementProps = {
       className: styledClasses,

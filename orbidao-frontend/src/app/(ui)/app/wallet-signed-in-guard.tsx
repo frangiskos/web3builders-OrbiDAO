@@ -1,15 +1,20 @@
-'use client';
-import { ConnectWalletButton } from '@/components/ui/ConnectWalletButton';
-import { useWallet } from '@solana/wallet-adapter-react';
+"use client";
+import { ConnectWalletButton } from "@/components/ui/ConnectWalletButton";
+import { Typography } from "@/components/ui/Typography";
+import { useWallet } from "@solana/wallet-adapter-react";
 
-export const WalletSignedInGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const WalletSignedInGuard: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { publicKey } = useWallet();
 
   if (!publicKey) {
     return (
       <>
-        <h1>Connect your wallet</h1>
-        <ConnectWalletButton />
+        <Typography as="h3">Connect your wallet</Typography>
+        <div className="flex justify-center mt-4">
+          <ConnectWalletButton />
+        </div>
       </>
     );
   }

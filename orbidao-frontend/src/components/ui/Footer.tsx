@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 export const Footer: FC = () => {
   return (
-    <div className="flex-none px-0 bottom-0 left-0 right-0">
+    <div className="flex-none px-0 bottom-0 left-0 right-0 z-10 relative">
       <footer className="bg-gray-900 grid-flow-col grid items-start w-full grid-flow-row text-sm leading-snug gap-x-4  items-center p-4 bg-neutral text-neutral-content">
         <div className="items-center grid-flow-col">
           <span className="text-lg font-bold px-4">
