@@ -26,17 +26,6 @@ export default function Page() {
               roundness="full"
               isFullWidth
             >
-              Member Area
-            </Button>
-          </Link>
-          <Link href={"/app"}>
-            <Button
-              className="mt-4"
-              variant="solid"
-              size="lg"
-              roundness="full"
-              isFullWidth
-            >
               Welcome New DAOists
             </Button>
           </Link>

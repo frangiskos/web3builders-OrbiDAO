@@ -11,7 +11,7 @@ export const WalletSignedInGuard: React.FC<{ children: React.ReactNode }> = ({
   if (!publicKey) {
     return (
       <>
-        <Typography as="h3">Connect your wallet</Typography>
+        <Typography className="flex justify-center" as="h3">Connect your wallet</Typography>
         <div className="flex justify-center mt-4">
           <ConnectWalletButton />
         </div>

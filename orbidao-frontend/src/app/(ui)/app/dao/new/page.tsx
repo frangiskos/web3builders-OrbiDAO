@@ -13,6 +13,7 @@ import { VotingStake } from "./VotingStake";
 import { PreVoting } from "./PreVoting";
 import { PostVoting } from "./PostVoting";
 import { CreateOrgReview } from "./Review";
+import { useRouter } from "next/navigation";
 
 export type FormDataType = {
   orgTemplate?: string;
@@ -36,6 +37,7 @@ export interface StepProps {
 }
 
 export default function Page() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [isDisabled, setIsDisabled] = useState(false);
   const [isFinal, setIsFinal] = useState(false);
@@ -48,6 +50,7 @@ export default function Page() {
   const handleFormSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     console.log("submit: ", formData);
+    router.push('/app/dao');
   };
 
   const onFormUpdate = (fieldName: keyof FormDataType) => (value: string) => {

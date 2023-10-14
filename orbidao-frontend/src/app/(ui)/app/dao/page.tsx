@@ -2,7 +2,6 @@ import { Card, CardHeader, CardBody } from "@nextui-org/card";
 import { Divider } from "@nextui-org/divider";
 import { Button } from "@/components/ui/Button";
 import { Typography } from "@/components/ui/Typography";
-import { RadioGroup } from "@/components/ui/RadioGroup";
 import { CardLink } from "@/components/ui/CardLink";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,13 +23,8 @@ const OrganizationCard: React.FC = () => (
       </Typography>
     </CardHeader>
     <CardBody>
-      <Link href="dao/new">
-        <CardLink type="dashed" icon={<SvgIcon />}>
-          <Typography>CyberAI Art</Typography>
-        </CardLink>
-      </Link>
-      <CardLink type="solid" icon={<SvgIcon />}>
-        <Typography>Harammbe</Typography>
+      <CardLink type="dashed" icon={<SvgIcon />}>
+        <Typography>Orbit DAO</Typography>
       </CardLink>
       <Divider className="my-4" />
       <Link href="dao/new">
@@ -53,23 +47,6 @@ export default function Page() {
           Bespoke decision making and management solutions for equitable and
           efficient organizations and communities.
         </Typography>
-        <Link href={"dao/new"} className="flex justify-center">
-          <Button className="mt-4" variant="solid" roundness="full">
-            Create a DAO
-          </Button>
-        </Link>
-
-        <RadioGroup type="card" defaultValue="name2" orientation="horizontal">
-          <RadioGroup.Radio type="card" value="name1">
-            Blank
-          </RadioGroup.Radio>
-          <RadioGroup.Radio type="card" value="name2">
-            Delaware C-Corp
-          </RadioGroup.Radio>
-          <RadioGroup.Radio type="card" value="name3">
-            NFT Community
-          </RadioGroup.Radio>
-        </RadioGroup>
 
         <div className="mb-6">
           <OrganizationCard />
