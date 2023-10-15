@@ -40,7 +40,7 @@ export default function Page() {
         <SignMessage />
       </div>
       <div className="flex flex-col">
-        <Checkbox className="mx-auto" isSelected={mintValue} onValueChange={onlocalStorageMint}>
+        <Checkbox className="mx-auto" isSelected={mintValue} isInvalid={!mintValue} onValueChange={onlocalStorageMint}>
           Mint the membership NFT to join OrbiDAO
         </Checkbox>
         <Button className="w-[50%] mt-4 mx-auto" variant="solid" roundness="full" onClick={handleCreateDaoClick} isFullWidth>

@@ -14,6 +14,7 @@ import { PreVoting } from "./PreVoting";
 import { PostVoting } from "./PostVoting";
 import { CreateOrgReview } from "./Review";
 import { useRouter } from "next/navigation";
+import { useOrgContext } from "../../layout";
 
 export type FormDataType = {
   orgTemplate?: string;
@@ -38,6 +39,7 @@ export interface StepProps {
 
 export default function Page() {
   const router = useRouter();
+  const { addOrganization } = useOrgContext();
   const [currentStep, setCurrentStep] = useState(0);
   const [isDisabled, setIsDisabled] = useState(false);
   const [isFinal, setIsFinal] = useState(false);
@@ -50,6 +52,7 @@ export default function Page() {
   const handleFormSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     console.log("submit: ", formData);
+    addOrganization(formData['organizationName'] ?? '');
     router.push('/app/dao');
   };
 
