@@ -17,7 +17,7 @@ export default function Page() {
           Only Possible on Solana
         </Typography>
         <Divider />
-        <div className="mt-6 flex flex-wrap flex-row justify-between gap-4">
+        <div className="mt-6 flex flex-col gap-4">
           <Link href={"/app"}>
             <Button
               className="mt-4"
