@@ -1,18 +1,20 @@
-"use client";
-import { Stepper } from "@/components/ui/Stepper";
-import { Background } from "./Background";
-import { Dispatch, FormEvent, SetStateAction, useMemo, useState } from "react";
-import { CreateOrgTemplate } from "./CreateOrgTemplate";
-import { NameOrganization } from "./CreateOrgName";
-import { MEMBERSHIP, Membership } from "./Membership";
-import { TokenIssuance } from "./TokenIssuance";
-import { ProposalFee } from "./ProposalFee";
-import { Voting } from "./Voting";
-import { VoteQuorum } from "./QuorumParticipants";
-import { VotingStake } from "./VotingStake";
-import { PreVoting } from "./PreVoting";
-import { PostVoting } from "./PostVoting";
-import { CreateOrgReview } from "./Review";
+'use client';
+import { Stepper } from '@/components/ui/Stepper';
+import { Background } from './Background';
+import { Dispatch, FormEvent, SetStateAction, useMemo, useState } from 'react';
+import { CreateOrgTemplate } from './CreateOrgTemplate';
+import { NameOrganization } from './CreateOrgName';
+import { MEMBERSHIP, Membership } from './Membership';
+import { TokenIssuance } from './TokenIssuance';
+import { ProposalFee } from './ProposalFee';
+import { Voting } from './Voting';
+import { VoteQuorum } from './QuorumParticipants';
+import { VotingStake } from './VotingStake';
+import { PreVoting } from './PreVoting';
+import { PostVoting } from './PostVoting';
+import { CreateOrgReview } from './Review';
+import { useRouter } from 'next/navigation';
+import { useOrgContext } from '../../layout';
 
 export type FormDataType = {
   orgTemplate?: string;
@@ -36,18 +38,22 @@ export interface StepProps {
 }
 
 export default function Page() {
+  const router = useRouter();
+  const { addOrganization } = useOrgContext();
   const [currentStep, setCurrentStep] = useState(0);
   const [isDisabled, setIsDisabled] = useState(false);
   const [isFinal, setIsFinal] = useState(false);
   const [formData, setFormData] = useState<FormDataType>({
-    quorumParticipation: "51",
-    preVoting: "1",
-    postVoting: "14",
+    quorumParticipation: '51',
+    preVoting: '1',
+    postVoting: '14',
   });
 
   const handleFormSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    console.log("submit: ", formData);
+    console.log('submit: ', formData);
+    addOrganization(formData['organizationName'] ?? '');
+    router.push('/app');
   };
 
   const onFormUpdate = (fieldName: keyof FormDataType) => (value: string) => {
@@ -68,12 +74,7 @@ export default function Page() {
         onStepChange={setCurrentStep}
         onHold={onFormHold}
       />,
-      <NameOrganization
-        key="nameOrg"
-        formData={formData}
-        onUpdate={onFormUpdate}
-        onHold={onFormHold}
-      />,
+      <NameOrganization key="nameOrg" formData={formData} onUpdate={onFormUpdate} onHold={onFormHold} />,
       <Membership
         key="memberShip"
         formData={formData}
@@ -81,36 +82,11 @@ export default function Page() {
         onStepChange={setCurrentStep}
         onHold={onFormHold}
       />,
-      <ProposalFee
-        key="proposalFee"
-        formData={formData}
-        onUpdate={onFormUpdate}
-        onHold={onFormHold}
-      />,
-      <Voting
-        key="voting"
-        formData={formData}
-        onUpdate={onFormUpdate}
-        onHold={onFormHold}
-      />,
-      <VoteQuorum
-        key="voteQuorum"
-        formData={formData}
-        onUpdate={onFormUpdate}
-        onHold={onFormHold}
-      />,
-      <PreVoting
-        key="preVoting"
-        formData={formData}
-        onUpdate={onFormUpdate}
-        onHold={onFormHold}
-      />,
-      <PostVoting
-        key="postVoting"
-        formData={formData}
-        onUpdate={onFormUpdate}
-        onHold={onFormHold}
-      />,
+      <ProposalFee key="proposalFee" formData={formData} onUpdate={onFormUpdate} onHold={onFormHold} />,
+      <Voting key="voting" formData={formData} onUpdate={onFormUpdate} onHold={onFormHold} />,
+      <VoteQuorum key="voteQuorum" formData={formData} onUpdate={onFormUpdate} onHold={onFormHold} />,
+      <PreVoting key="preVoting" formData={formData} onUpdate={onFormUpdate} onHold={onFormHold} />,
+      <PostVoting key="postVoting" formData={formData} onUpdate={onFormUpdate} onHold={onFormHold} />,
       <CreateOrgReview key="review" formData={formData} />,
     ];
 
@@ -118,24 +94,14 @@ export default function Page() {
       createOrganization.splice(
         3,
         0,
-        <TokenIssuance
-          key="tokenIssuance"
-          formData={formData}
-          onUpdate={onFormUpdate}
-          onHold={onFormHold}
-        />
+        <TokenIssuance key="tokenIssuance" formData={formData} onUpdate={onFormUpdate} onHold={onFormHold} />
       );
     }
     if (membership && membership === MEMBERSHIP.NON_FUNGIBLE) {
       createOrganization.splice(
         7,
         0,
-        <VotingStake
-          key="votingStake"
-          formData={formData}
-          onUpdate={onFormUpdate}
-          onHold={onFormHold}
-        />
+        <VotingStake key="votingStake" formData={formData} onUpdate={onFormUpdate} onHold={onFormHold} />
       );
     }
 
@@ -163,7 +129,7 @@ export default function Page() {
             current={currentStep}
             handleStep={onStepChange}
             className="md:w-[35vw] xs:w-[90vw]"
-            type={isFinal ? "submit" : "button"}
+            type={isFinal ? 'submit' : 'button'}
           />
         </form>
         <div className="flex items-center justify-center mt-10 text-sm text-white text-opacity-50">
