@@ -110,6 +110,7 @@ const Stepper: FC<StepperProps> = ({
             isDisabled={isDisabled}
             className="h-14"
             type={type}
+            isLoading={type === 'submit'}
           >
             {isLastStep ? lastStep : <ChevronRight />}
           </Button>

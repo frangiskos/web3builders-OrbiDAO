@@ -7,7 +7,7 @@ import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import type { FC } from 'react';
 import React, { useCallback } from 'react';
 
-const SOL_TO_AIRDROP = 0.1;
+const SOL_TO_AIRDROP = 0.2;
 
 export const RequestAirdrop: FC = () => {
   const { connection } = useConnection();
